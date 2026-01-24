@@ -1,0 +1,17 @@
+.header {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: var(--primary);
+    color: var(--text-light);
+}
+
+a {
+    text-decoration: none;
+    color: var(--text-light);
+}
+
+nav {
+    display: flex;
+    gap: 32px;
+}

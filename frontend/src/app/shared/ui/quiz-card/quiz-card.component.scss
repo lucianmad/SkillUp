@@ -1,0 +1,36 @@
+.card {
+    background-color: white;
+    border-radius: 12px;
+    border: 1px solid rgb(247, 244, 244);
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    transition: transform 500ms;
+}
+
+.card:hover {
+    transform: translateY(-2.5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.10);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.start-btn {
+    text-decoration: none;
+    color: white;
+    text-align: center;
+    font-weight: 800;
+    background-color: var(--primary);
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+.start-btn:hover {
+    opacity: 0.9;
+}

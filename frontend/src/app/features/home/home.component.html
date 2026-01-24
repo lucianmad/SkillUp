@@ -1,0 +1,26 @@
+<section class="hero">
+    <div class="container">
+        <div class="text-content">
+            <h1>Take your Web Development knowledge to another level</h1>
+            <p>Join our massive developer community 
+                taking quizzes to solidify your knowledge 
+                and land your dream job.</p>
+        </div>
+        <div class="image-content">
+            <img src="images/hero.svg" alt="Developer studying">
+        </div>
+    </div>
+</section>
+<section class="quiz-section">
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h2>Popular Quizzes</h2>
+            <p>Test your skills with our most taken quizzes.</p>
+        </div>
+        <div class="quiz-grid">
+            @for(quiz of quizService.quizzes(); track quiz.id){
+                <app-quiz-card [quiz]="quiz"></app-quiz-card>
+            }
+        </div>
+    </div>
+</section>

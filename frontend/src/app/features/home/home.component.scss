@@ -1,0 +1,59 @@
+.hero {
+    background-color: var(--bg-white);
+    padding: 4rem;
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    gap: 4rem;
+}
+
+.text-content {
+    flex: 1;
+
+    h1 {
+        color: var(--text-dark)
+    }
+
+    p {
+        color: var(--text-dark)
+    }
+}
+
+.image-content {
+    display: flex;
+    flex: 1;
+    img {
+        width: 100%;
+        height: auto;
+    }
+}
+
+.quiz-section {
+    background-color: #f8f9fa;
+    padding: 2rem 4rem;
+    width: 100%;
+}
+
+.quiz-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.quiz-header {
+    flex: 1;
+    text-align: center;
+}
+
+.quiz-grid {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
