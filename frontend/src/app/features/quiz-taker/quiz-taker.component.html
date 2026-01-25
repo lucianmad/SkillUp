@@ -1,0 +1,61 @@
+<div class="quiz-container">
+    @if (quizService.activeQuiz(); as quiz) {
+        <header class="quiz-header">
+            <h2>{{ quiz.title }}</h2>
+            <a [routerLink]="['/']" class="exit-btn">Exit</a>
+        </header>
+        <hr>
+        <main class="question-area">
+            @if (quizService.currentQuestion(); as question) {
+                <div class="question-card">
+                    <span>Question {{ quizService.currentQuestionIndex() + 1 }}</span>
+                    <h3>{{ question.text }}</h3>
+                </div>
+                <div class="options-list">
+                    @switch (question.type) {
+                        @case (0) {
+                            @for (opt of question.options; track opt) {
+                                <label class="option-row">
+                                    <input type="radio" 
+                                    [name]="question.id" 
+                                    [value]="opt"
+                                    [checked]="isOptionSelected(question.id, opt)"
+                                    (change)="onRadioChange(question.id, opt)">
+                                    {{ opt }}
+                                </label>
+                            }
+                        }
+                        @case (1) {
+                            @for (opt of question.options; track opt) {
+                                <label class="option-row">
+                                    <input type="checkbox" 
+                                    [value]="opt"
+                                    [checked]="isOptionSelected(question.id, opt)"
+                                    (change)="onCheckboxChange(question.id, opt, $any($event.target).checked)">
+                                    {{ opt }}
+                                </label>
+                            }
+                        }
+                    }
+                </div>
+            }
+        </main>
+        <footer class="quiz-footer">
+            <button class="nav-btn" (click)="quizService.prevQuestion()" [disabled]="quizService.currentQuestionIndex() === 0">
+                Previous
+            </button>
+            @if(quizService.isLastQuestion()){
+                <button class="nav-btn submit" (click)="quizService.nextQuestion()">
+                    Submit
+                </button>
+            } @else {
+                <button class="nav-btn" (click)="quizService.nextQuestion()" [disabled]="quizService.isLastQuestion()">
+                    Next
+                </button>
+            }
+        </footer>
+    }
+    @else {
+        <p>Loading Quiz...</p>
+    }
+</div>

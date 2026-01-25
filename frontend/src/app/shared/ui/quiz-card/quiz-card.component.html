@@ -4,6 +4,6 @@
         <p>{{ quiz().questions.length }} questions</p>
     </div>
     <div class="card-footer">
-        <a href="#" class="start-btn">Start Quiz</a>
+        <a [routerLink]="['/quiz', quiz().id]" class="start-btn">Start Quiz</a>
     </div>
 </div>

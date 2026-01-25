@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { Quiz } from '../../shared/models/quiz.model';
 import { QuestionType } from '../../shared/enums/question-type.enum';
 
@@ -92,7 +92,20 @@ export class QuizService {
 
   readonly quizzes = signal<Quiz[]>([]);
   readonly activeQuiz = signal<Quiz | null>(null);
+  readonly currentQuestionIndex = signal<number>(0);
+  readonly userAnswers = signal<Record<string, string | string[]>>({});
 
+  readonly currentQuestion = computed(() => {
+    const quiz = this.activeQuiz();
+    const index = this.currentQuestionIndex();
+    return quiz ? quiz.questions[index] : null;
+  });
+
+  readonly isLastQuestion = computed(() => {
+    const quiz = this.activeQuiz();
+    if (!quiz) return false;
+    return this.currentQuestionIndex() === quiz.questions.length - 1;
+  });
 
   constructor() {
     this.loadQuizzes();
@@ -100,5 +113,33 @@ export class QuizService {
 
   private loadQuizzes() {
     this.quizzes.set(this.mockQuizzes);
+  }
+
+  startQuiz(quizId: string) {
+    const quiz = this.mockQuizzes.find(q => q.id === quizId);
+    if (quiz) {
+      this.activeQuiz.set(quiz);
+      this.currentQuestionIndex.set(0);
+      this.userAnswers.set({});
+    }
+  }
+
+  answerQuestion(questionId: string, answer: string | string[]) {
+    this.userAnswers.update(prev => ({
+      ...prev,
+      [questionId]: answer
+    }));
+  }
+
+  nextQuestion() {
+    if (!this.isLastQuestion()) {
+      this.currentQuestionIndex.update(index => index + 1);
+    }
+  }
+
+  prevQuestion() {
+    if (this.currentQuestionIndex() >= 1) {
+      this.currentQuestionIndex.update(index => index - 1);
+    }
   }
 }
