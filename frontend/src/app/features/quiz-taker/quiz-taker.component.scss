@@ -39,4 +39,9 @@
 .submit {
     background-color: green;
     color: white;
+    text-decoration: none;
+}
+
+.disabled {
+    cursor: not-allowed;
 }

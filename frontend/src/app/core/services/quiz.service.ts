@@ -1,6 +1,7 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { Quiz } from '../../shared/models/quiz.model';
 import { QuestionType } from '../../shared/enums/question-type.enum';
+import { Question } from '../../shared/models/question.model';
 
 @Injectable({
   providedIn: 'root',
@@ -142,4 +143,45 @@ export class QuizService {
       this.currentQuestionIndex.update(index => index - 1);
     }
   }
+
+  computeResults(quizId: string) {
+    let score = 0;
+    const quiz = this.quizzes().find(quiz => quiz.id === quizId);
+    if (quiz) {
+      for (const question of quiz.questions) {
+        if (question.type === QuestionType.SingleChoice) {
+          if (this.computeResultsForSingleChoice(question, this.userAnswers())) {
+            score++;
+          }
+        }
+        else if (question.type === QuestionType.MultipleChoice) {
+          if (this.computeResultsForMultipleChoice(question, this.userAnswers())){
+            score++;
+          }
+        }
+      }
+    }
+
+    return score;
+  }
+
+  private computeResultsForSingleChoice(question: Question, answers: Record<string, string | string[]>) {
+    const userAnswers = answers[question.id];
+    if (!userAnswers) {
+      return false;
+    }
+
+    return question.correctAnswers.includes(userAnswers as string);
+  }
+
+  private computeResultsForMultipleChoice(question: Question, answers: Record<string, string | string[]>) {
+    const userAnswers = answers[question.id] as string[];
+    const correct = question.correctAnswers;
+    
+    if (!userAnswers || userAnswers.length !== correct.length) {
+      return false;
+    }
+    
+    return userAnswers.every(item => correct.includes(item));
+  }  
 }

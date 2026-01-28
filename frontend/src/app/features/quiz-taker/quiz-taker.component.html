@@ -41,13 +41,13 @@
             }
         </main>
         <footer class="quiz-footer">
-            <button class="nav-btn" (click)="quizService.prevQuestion()" [disabled]="quizService.currentQuestionIndex() === 0">
+            <button class="nav-btn" (click)="quizService.prevQuestion()" [disabled]="quizService.currentQuestionIndex() === 0", [class.disabled] = "quizService.currentQuestionIndex() === 0">
                 Previous
             </button>
             @if(quizService.isLastQuestion()){
-                <button class="nav-btn submit" (click)="quizService.nextQuestion()">
+                <a class="nav-btn submit" [routerLink]="['/quiz', quiz.id, 'results']">
                     Submit
-                </button>
+                </a>
             } @else {
                 <button class="nav-btn" (click)="quizService.nextQuestion()" [disabled]="quizService.isLastQuestion()">
                     Next
