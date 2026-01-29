@@ -1,0 +1,5 @@
+<section class="quiz-grid">
+    @for (quiz of quizService.quizzes(); track quiz.id) {
+        <app-quiz-card [quiz]="quiz"></app-quiz-card>
+    }
+</section>
