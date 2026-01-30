@@ -1,0 +1,15 @@
+services: 
+  postgres:
+    image: postgres:17
+    container_name: skillup-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${SKILLUP_DB_USER}
+      POSTGRES_PASSWORD: ${SKILLUP_DB_PASS}
+      POSTGRES_DB: ${SKILLUP_DB_NAME}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      
+volumes:
+  pg_data:

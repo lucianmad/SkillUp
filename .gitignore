@@ -1,0 +1,35 @@
+## --- .NET Core ---
+*.swp
+*.*~
+project.lock.json
+.project
+.classpath
+# 👇 REMOVE leading slashes here so they match subdirectories
+obj/
+bin/
+TestResults/
+
+## --- Rider / JetBrains ---
+.idea/
+*.sln.iml
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+## --- Visual Studio ---
+.vs/
+*.suo
+*.user
+*.userprefs
+
+## --- Secrets ---
+.env
+.env.*
+!.env.example
+appsettings.Development.json
+secrets.json
+
+## --- OS Files ---
+.DS_Store
+Thumbs.db
