@@ -21,9 +21,9 @@ jobs:
       with:
         dotnet-version: 10.0.x
     - name: Restore dependencies
-      run: dotnet restore ./SkillUp.sln
+      run: dotnet restore ./SkillUp.slnx
     - name: Build
-      run: dotnet build ./SkillUp.sln --no-restore
+      run: dotnet build ./SkillUp.slnx --no-restore
     - name: Test
       run: dotnet test ./backend/SkillUp.Tests/SkillUp.Tests.csproj --no-build --verbosity normal
 
