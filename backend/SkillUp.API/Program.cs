@@ -28,6 +28,9 @@ var quizGroup = app.MapGroup("/api/quizzes")
 
 GetQuizzes.MapEndpoint(quizGroup);
 PostQuiz.MapEndpoint(quizGroup);
+GetQuizById.MapEndpoint(quizGroup);
+PutQuiz.MapEndpoint(quizGroup);
+DeleteQuiz.MapEndpoint(quizGroup);
 
 app.Run();
 

@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using FluentAssertions;
 using SkillUp.API.Features.Quizzes;
 
 namespace SkillUp.Tests.Features.Quizzes;
@@ -14,16 +15,16 @@ public class PostQuizTest: IClassFixture<SkillUpWebApplicationFactory>
     }
 
     [Fact]
-    public async Task PostQuiz_ReturnsCreatedQuiz_WhenCreatingAValidQuiz()
+    public async Task PostQuiz_ShouldReturnCreatedQuizWithAGuidAndATitle_WhenCreatingAValidQuiz()
     {
         var request = new PostQuiz.QuizRequest("Integration testing");
         
         var response = await _client.PostAsJsonAsync("api/quizzes", request);
         
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
         var result = await response.Content.ReadFromJsonAsync<PostQuiz.QuizResponse>();
-        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        Assert.NotNull(result);
-        Assert.Equal("Integration testing", result.Title);
-        Assert.NotEqual(Guid.Empty, result.Id);
+        result.Should().NotBeNull();
+        result.Title.Should().Be("Integration testing");
+        result.Id.Should().NotBeEmpty();
     }
 }

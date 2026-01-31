@@ -1,4 +1,6 @@
+using System.Net;
 using System.Net.Http.Json;
+using FluentAssertions;
 using SkillUp.API.Features.Quizzes;
 
 namespace SkillUp.Tests.Features.Quizzes;
@@ -13,12 +15,13 @@ public class GetQuizzesTest : IClassFixture<SkillUpWebApplicationFactory>
     }
 
     [Fact]
-    public async Task GetQuizzes_ReturnsOkAndEmptyList_WhenNoQuizzesExist()
+    public async Task GetQuizzes_ShouldReturnOkAndEmptyList_WhenNoQuizzesExist()
     {
         var response = await _client.GetAsync("/api/quizzes");
         
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
         var result = await response.Content.ReadFromJsonAsync<List<PostQuiz.QuizResponse>>();
-        Assert.NotNull(result);
-        Assert.Empty(result);
+        result.Should().NotBeNull();
+        result.Should().BeEmpty();
     }
 }
