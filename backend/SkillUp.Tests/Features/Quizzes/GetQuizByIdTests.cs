@@ -8,12 +8,12 @@ using SkillUp.API.Features.Quizzes;
 
 namespace SkillUp.Tests.Features.Quizzes;
 
-public class GetQuizByIdTest: IClassFixture<SkillUpWebApplicationFactory>
+public class GetQuizByIdTests: IClassFixture<SkillUpWebApplicationFactory>
 {
     private readonly HttpClient _client;
     private readonly SkillUpWebApplicationFactory _factory;
     
-    public GetQuizByIdTest(SkillUpWebApplicationFactory factory)
+    public GetQuizByIdTests(SkillUpWebApplicationFactory factory)
     {
         _factory = factory;
         _client = factory.CreateClient();
@@ -32,10 +32,10 @@ public class GetQuizByIdTest: IClassFixture<SkillUpWebApplicationFactory>
     [Fact]
     public async Task GetQuizById_ShouldReturnOkWithQuizDetails_WhenQuizExists()
     {
-        var knownId = Guid.NewGuid();
+        var existingId = Guid.NewGuid();
         var existingQuiz = new Quiz
         {
-            Id = knownId,
+            Id = existingId,
             Title = "Seeded"
         };
 
@@ -46,12 +46,12 @@ public class GetQuizByIdTest: IClassFixture<SkillUpWebApplicationFactory>
             await db.SaveChangesAsync();
         }
 
-        var response = await _client.GetAsync($"/api/quizzes/{knownId}");
+        var response = await _client.GetAsync($"/api/quizzes/{existingId}");
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var result = await response.Content.ReadFromJsonAsync<GetQuizById.QuizResponse>();
         result.Should().NotBeNull();
-        result.Id.Should().Be(knownId);
+        result.Id.Should().Be(existingId);
         result.Title.Should().Be("Seeded");
     }
 }

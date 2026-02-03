@@ -5,15 +5,16 @@ using Microsoft.Extensions.DependencyInjection;
 using SkillUp.API.Database;
 using SkillUp.API.Domain;
 using SkillUp.API.Features.Quizzes;
+using SkillUp.API.Features.Quizzes.CreateQuiz;
 
 namespace SkillUp.Tests.Features.Quizzes;
 
-public class UpdateQuizTest: IClassFixture<SkillUpWebApplicationFactory>
+public class UpdateQuizTests: IClassFixture<SkillUpWebApplicationFactory>
 {
     private readonly SkillUpWebApplicationFactory _factory;
     private readonly HttpClient _client;
 
-    public UpdateQuizTest(SkillUpWebApplicationFactory factory)
+    public UpdateQuizTests(SkillUpWebApplicationFactory factory)
     {
         _factory = factory;
         _client = factory.CreateClient();
@@ -23,7 +24,7 @@ public class UpdateQuizTest: IClassFixture<SkillUpWebApplicationFactory>
     public async Task PutQuiz_ShouldReturnNotFound_WhenQuizDoesNotExist()
     {
         var id = Guid.NewGuid();
-        var request = new CreateQuiz.QuizRequest("Integration testing");
+        var request = new QuizRequest("Integration testing");
 
         var response = await _client.PutAsJsonAsync($"/api/quizzes/{id}", request);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

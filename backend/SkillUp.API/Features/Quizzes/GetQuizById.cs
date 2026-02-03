@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using SkillUp.API.Database;
 
 namespace SkillUp.API.Features.Quizzes;
@@ -11,10 +13,10 @@ public static class GetQuizById
         group.MapGet("/{id:Guid}", HandleAsync);
     }
 
-    private static async Task<IResult> HandleAsync(AppDbContext context, Guid id)
+    private static async Task<Results<Ok<QuizResponse>, NotFound>> HandleAsync(AppDbContext context, Guid id, CancellationToken ct)
     {
-        var quiz = await context.Quizzes.FindAsync(id);
+        var quiz = await context.Quizzes.FirstOrDefaultAsync(q => q.Id == id, ct);
         
-        return quiz is null ? Results.NotFound() : Results.Ok(new QuizResponse(quiz.Id, quiz.Title));
+        return quiz is null ? TypedResults.NotFound() : TypedResults.Ok(new QuizResponse(quiz.Id, quiz.Title));
     }
 }

@@ -12,5 +12,7 @@ public class QuizConfiguration: IEntityTypeConfiguration<Quiz>
         builder.HasKey(q => q.Id);
         
         builder.Property(q => q.Title).IsRequired().HasMaxLength(200);
+        
+        builder.HasIndex(q => q.Title).IsUnique();
     }
 }

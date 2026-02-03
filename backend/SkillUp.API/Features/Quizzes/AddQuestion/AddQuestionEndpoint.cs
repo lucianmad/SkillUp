@@ -1,30 +1,35 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using SkillUp.API.Database;
 using SkillUp.API.Domain;
-using SkillUp.API.Domain.Enums;
 
-namespace SkillUp.API.Features.Quizzes;
+namespace SkillUp.API.Features.Quizzes.AddQuestion;
 
-public static class AddQuestion
+public static class AddQuestionEndpoint
 {
-    public record AnswerRequest(string Text, bool IsCorrect);
-    public record QuestionRequest(QuestionType Type, string Text, List<AnswerRequest> Answers);
-    
-    public record AnswerResponse(Guid Id, string Text, bool IsCorrect);
-    public record QuestionResponse(Guid Id, string Text, QuestionType Type, List<AnswerResponse>? Answers = null);
-    
     public static void MapEndpoint(RouteGroupBuilder group)
     {
         group.MapPost("/{id:guid}/questions", HandleAsync);
     }
 
-    private static async Task<IResult> HandleAsync(Guid id, AppDbContext context, QuestionRequest request)
+    private static async Task<Results<Created<QuestionResponse>, NotFound, ValidationProblem>> HandleAsync(
+            Guid id, 
+            AppDbContext context, 
+            QuestionRequest request, 
+            AddQuestionValidator validator,
+            CancellationToken ct)
     {
-        var quiz = await context.Quizzes.FindAsync(id);
+        var validationResult = await validator.ValidateAsync(request, ct);
+        if (!validationResult.IsValid)
+        {
+            return TypedResults.ValidationProblem(validationResult.ToDictionary());
+        }
+        
+        var quiz = await context.Quizzes.FirstOrDefaultAsync(q => q.Id == id, ct);
 
         if (quiz == null)
         {
-            return Results.NotFound();
+            return TypedResults.NotFound();
         }
 
         var question = new Question
@@ -40,7 +45,7 @@ public static class AddQuestion
         };
         
         quiz.Questions.Add(question);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(ct);
         
         var questionResponse = new QuestionResponse
         (
@@ -50,6 +55,6 @@ public static class AddQuestion
             question.Answers.Select(a => new AnswerResponse(a.Id, a.Text, a.IsCorrect)).ToList()
         );
         
-        return Results.Created($"/api/quizzes/{id}/questions/{question.Id}", questionResponse);
+        return TypedResults.Created($"/api/quizzes/{id}/questions/{question.Id}", questionResponse);
     }
 }

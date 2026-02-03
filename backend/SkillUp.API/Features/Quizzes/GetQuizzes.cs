@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using SkillUp.API.Database;
 
@@ -11,12 +12,12 @@ public static class GetQuizzes
         group.MapGet("/", HandleAsync);
     }
 
-    private static async Task<IResult> HandleAsync(AppDbContext context)
+    private static async Task<Ok<List<QuizResponse>>> HandleAsync(AppDbContext context, CancellationToken ct)
     {
         var quizzes = await context.Quizzes
             .Select(q => new QuizResponse(q.Id, q.Title))
-            .ToListAsync();
+            .ToListAsync(ct);
         
-        return Results.Ok(quizzes);
+        return TypedResults.Ok(quizzes);
     }
 }

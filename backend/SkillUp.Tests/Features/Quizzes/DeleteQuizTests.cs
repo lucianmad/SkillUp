@@ -6,12 +6,12 @@ using SkillUp.API.Domain;
 
 namespace SkillUp.Tests.Features.Quizzes;
 
-public class DeleteQuizTest: IClassFixture<SkillUpWebApplicationFactory>
+public class DeleteQuizTests: IClassFixture<SkillUpWebApplicationFactory>
 {
     private readonly SkillUpWebApplicationFactory _factory;
     private readonly HttpClient _client;
     
-    public DeleteQuizTest(SkillUpWebApplicationFactory factory)
+    public DeleteQuizTests(SkillUpWebApplicationFactory factory)
     {
         _factory = factory;
         _client = factory.CreateClient();

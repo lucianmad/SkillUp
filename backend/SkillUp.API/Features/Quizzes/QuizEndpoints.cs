@@ -8,10 +8,10 @@ public static class QuizEndpoints
             .WithTags("Quizzes");
         
         GetQuizzes.MapEndpoint(group);
-        CreateQuiz.MapEndpoint(group);
+        CreateQuiz.CreateQuizEndpoint.MapEndpoint(group);
         GetQuizById.MapEndpoint(group);
         UpdateQuiz.MapEndpoint(group);
         DeleteQuiz.MapEndpoint(group);
-        AddQuestion.MapEndpoint(group);
+        AddQuestion.AddQuestionEndpoint.MapEndpoint(group);
     }
 }
