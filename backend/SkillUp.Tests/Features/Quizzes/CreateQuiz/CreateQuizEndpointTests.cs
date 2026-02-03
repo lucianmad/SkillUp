@@ -1,30 +1,21 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using SkillUp.API.Database;
 using SkillUp.API.Domain;
 using SkillUp.API.Features.Quizzes.CreateQuiz;
 
 namespace SkillUp.Tests.Features.Quizzes.CreateQuiz;
 
-public class CreateQuizEndpointTests: IClassFixture<SkillUpWebApplicationFactory>
+public class CreateQuizEndpointTests: BaseIntegrationTest
 {
-    private readonly SkillUpWebApplicationFactory _factory;
-    private readonly HttpClient _client;
-
-    public CreateQuizEndpointTests(SkillUpWebApplicationFactory factory)
-    {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
+    public CreateQuizEndpointTests(SkillUpWebApplicationFactory factory) : base(factory) {}
 
     [Fact]
     public async Task PostQuiz_ShouldReturnCreatedQuizWithAGuidAndATitle_WhenCreatingAValidQuiz()
     {
         var request = new QuizRequest("Integration testing");
         
-        var response = await _client.PostAsJsonAsync("api/quizzes", request);
+        var response = await Client.PostAsJsonAsync("api/quizzes", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var result = await response.Content.ReadFromJsonAsync<QuizResponse>();
@@ -38,7 +29,7 @@ public class CreateQuizEndpointTests: IClassFixture<SkillUpWebApplicationFactory
     {
         var request = new QuizRequest(string.Empty);
         
-        var response = await _client.PostAsJsonAsync("api/quizzes", request);
+        var response = await Client.PostAsJsonAsync("api/quizzes", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -53,16 +44,12 @@ public class CreateQuizEndpointTests: IClassFixture<SkillUpWebApplicationFactory
             Title = "Seeded"
         };
 
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Quizzes.Add(existingQuiz);
-            await db.SaveChangesAsync();
-        }
+        DbContext.Quizzes.Add(existingQuiz);
+        await DbContext.SaveChangesAsync();
         
         var request = new QuizRequest("Seeded");
         
-        var response = await _client.PostAsJsonAsync("api/quizzes", request);
+        var response = await Client.PostAsJsonAsync("api/quizzes", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.Conflict);
     }

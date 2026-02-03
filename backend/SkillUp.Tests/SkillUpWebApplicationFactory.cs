@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Npgsql;
+using Respawn;
 using SkillUp.API.Database;
 using Testcontainers.PostgreSql;
 
@@ -18,6 +20,9 @@ public class SkillUpWebApplicationFactory : WebApplicationFactory<Program>, IAsy
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
+
+    private Respawner _respawner = null!;
+    private DbConnection _connection = null!;
     
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -37,13 +42,29 @@ public class SkillUpWebApplicationFactory : WebApplicationFactory<Program>, IAsy
     {
         await _dbContainer.StartAsync();
         
-        using var scope = Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await dbContext.Database.MigrateAsync();
+        using (var scope = Services.CreateScope()){
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            await dbContext.Database.MigrateAsync();
+        }
+        
+        _connection = new NpgsqlConnection(_dbContainer.GetConnectionString());
+        await _connection.OpenAsync();
+        
+        _respawner = await Respawner.CreateAsync(_connection, new RespawnerOptions
+        {
+            DbAdapter = DbAdapter.Postgres,
+            SchemasToInclude = ["public"]
+        });
+    }
+
+    public async Task ResetDatabaseAsync()
+    {
+        await _respawner.ResetAsync(_connection);
     }
 
     public new async Task DisposeAsync()
     {
-        await _dbContainer.StopAsync();
+        await _connection.DisposeAsync();
+        await _dbContainer.DisposeAsync();
     }
 }

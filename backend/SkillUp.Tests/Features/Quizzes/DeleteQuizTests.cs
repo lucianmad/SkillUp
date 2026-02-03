@@ -1,28 +1,19 @@
 using System.Net;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using SkillUp.API.Database;
 using SkillUp.API.Domain;
 
 namespace SkillUp.Tests.Features.Quizzes;
 
-public class DeleteQuizTests: IClassFixture<SkillUpWebApplicationFactory>
+public class DeleteQuizTests: BaseIntegrationTest
 {
-    private readonly SkillUpWebApplicationFactory _factory;
-    private readonly HttpClient _client;
-    
-    public DeleteQuizTests(SkillUpWebApplicationFactory factory)
-    {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
+    public DeleteQuizTests(SkillUpWebApplicationFactory factory) : base(factory) {}
 
     [Fact]
     public async Task DeleteQuiz_ShouldReturnNotFound_WhenQuizDoesNotExist()
     {
         var id = Guid.NewGuid();
 
-        var response = await _client.DeleteAsync($"/api/quizzes/{id}");
+        var response = await Client.DeleteAsync($"/api/quizzes/{id}");
 
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -37,14 +28,10 @@ public class DeleteQuizTests: IClassFixture<SkillUpWebApplicationFactory>
             Title = "Seeded"
         };
 
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Quizzes.Add(existingQuiz);
-            await db.SaveChangesAsync();
-        }
+        DbContext.Quizzes.Add(existingQuiz);
+        await DbContext.SaveChangesAsync();
         
-        var response = await _client.DeleteAsync($"/api/quizzes/{existingId}");
+        var response = await Client.DeleteAsync($"/api/quizzes/{existingId}");
         
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }

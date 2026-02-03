@@ -1,29 +1,19 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using SkillUp.API.Database;
 using SkillUp.API.Domain;
-using SkillUp.API.Features.Quizzes;
 using SkillUp.API.Features.Quizzes.CreateQuiz;
 
 namespace SkillUp.Tests.Features.Quizzes;
 
-public class GetQuizzesTests : IClassFixture<SkillUpWebApplicationFactory>
+public class GetQuizzesTests : BaseIntegrationTest
 {
-    private readonly SkillUpWebApplicationFactory _factory;
-    private readonly HttpClient _client;
-
-    public GetQuizzesTests(SkillUpWebApplicationFactory factory)
-    {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
+    public GetQuizzesTests(SkillUpWebApplicationFactory factory) : base(factory) {}
 
     [Fact]
     public async Task GetQuizzes_ShouldReturnOkAndEmptyList_WhenNoQuizzesExist()
     {
-        var response = await _client.GetAsync("/api/quizzes");
+        var response = await Client.GetAsync("/api/quizzes");
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var result = await response.Content.ReadFromJsonAsync<List<QuizResponse>>();
@@ -53,16 +43,12 @@ public class GetQuizzesTests : IClassFixture<SkillUpWebApplicationFactory>
             Title = "Third quiz"
         };
 
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Quizzes.Add(firstQuiz);
-            db.Quizzes.Add(secondQuiz);
-            db.Quizzes.Add(thirdQuiz);
-            await db.SaveChangesAsync();
-        }
+        DbContext.Quizzes.Add(firstQuiz);
+        DbContext.Quizzes.Add(secondQuiz);
+        DbContext.Quizzes.Add(thirdQuiz);
+        await DbContext.SaveChangesAsync();
         
-        var response = await _client.GetAsync("/api/quizzes");
+        var response = await Client.GetAsync("/api/quizzes");
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var result = await response.Content.ReadFromJsonAsync<List<QuizResponse>>();

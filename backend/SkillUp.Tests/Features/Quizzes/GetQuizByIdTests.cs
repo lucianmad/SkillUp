@@ -1,30 +1,22 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using SkillUp.API.Database;
 using SkillUp.API.Domain;
 using SkillUp.API.Features.Quizzes;
 
 namespace SkillUp.Tests.Features.Quizzes;
 
-public class GetQuizByIdTests: IClassFixture<SkillUpWebApplicationFactory>
+public class GetQuizByIdTests: BaseIntegrationTest
 {
-    private readonly HttpClient _client;
-    private readonly SkillUpWebApplicationFactory _factory;
     
-    public GetQuizByIdTests(SkillUpWebApplicationFactory factory)
-    {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
+    public GetQuizByIdTests(SkillUpWebApplicationFactory factory) : base(factory) {}
     
     [Fact]
     public async Task GetQuizById_ShouldReturnNotFound_WhenQuizDoesNotExist()
     {
         var id = Guid.NewGuid();
         
-        var response = await _client.GetAsync($"/api/quizzes/{id}");
+        var response = await Client.GetAsync($"/api/quizzes/{id}");
 
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -39,14 +31,10 @@ public class GetQuizByIdTests: IClassFixture<SkillUpWebApplicationFactory>
             Title = "Seeded"
         };
 
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Quizzes.Add(existingQuiz);
-            await db.SaveChangesAsync();
-        }
-
-        var response = await _client.GetAsync($"/api/quizzes/{existingId}");
+        DbContext.Quizzes.Add(existingQuiz);
+        await DbContext.SaveChangesAsync();
+            
+        var response = await Client.GetAsync($"/api/quizzes/{existingId}");
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var result = await response.Content.ReadFromJsonAsync<GetQuizById.QuizResponse>();

@@ -1,24 +1,15 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
-using Microsoft.Extensions.DependencyInjection;
-using SkillUp.API.Database;
 using SkillUp.API.Domain;
 using SkillUp.API.Domain.Enums;
 using SkillUp.API.Features.Quizzes.AddQuestion;
 
 namespace SkillUp.Tests.Features.Quizzes.AddQuestion;
 
-public class AddQuestionEndpointTests: IClassFixture<SkillUpWebApplicationFactory>
+public class AddQuestionEndpointTests: BaseIntegrationTest
 {
-    private readonly SkillUpWebApplicationFactory _factory;
-    private readonly HttpClient _client;
-    
-    public AddQuestionEndpointTests(SkillUpWebApplicationFactory factory)
-    {
-        _factory = factory;
-        _client = factory.CreateClient();
-    }
+    public AddQuestionEndpointTests(SkillUpWebApplicationFactory factory) : base(factory) {}   
     
     [Fact]
     public async Task AddQuestion_ShouldReturnCreatedQuestionWithDetails_WhenAddingAValidQuestion()
@@ -27,15 +18,11 @@ public class AddQuestionEndpointTests: IClassFixture<SkillUpWebApplicationFactor
         var existingQuiz = new Quiz
         {
             Id = existingId,
-            Title = "Seeded"
+            Title = $"Test Quiz {Guid.NewGuid()}"
         };
 
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Quizzes.Add(existingQuiz);
-            await db.SaveChangesAsync();
-        }
+            DbContext.Quizzes.Add(existingQuiz);
+            await DbContext.SaveChangesAsync();
 
         var firstAnswer = new AnswerRequest("A", false);
         var secondAnswer = new AnswerRequest("B", true);
@@ -43,7 +30,7 @@ public class AddQuestionEndpointTests: IClassFixture<SkillUpWebApplicationFactor
         var answers = new List<AnswerRequest> {firstAnswer, secondAnswer, thirdAnswer};
         var request = new QuestionRequest(QuestionType.SingleChoice, "What is the response", answers);
         
-        var response = await _client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request);
+        var response = await Client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var result = await response.Content.ReadFromJsonAsync<QuestionResponse>();
@@ -61,7 +48,7 @@ public class AddQuestionEndpointTests: IClassFixture<SkillUpWebApplicationFactor
         var secondAnswer = new AnswerRequest("B", true);
         var request = new QuestionRequest(QuestionType.SingleChoice, "Test question", [firstAnswer, secondAnswer]);
         
-        var response = await _client.PostAsJsonAsync($"/api/quizzes/{id}/questions", request);
+        var response = await Client.PostAsJsonAsync($"/api/quizzes/{id}/questions", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -73,19 +60,15 @@ public class AddQuestionEndpointTests: IClassFixture<SkillUpWebApplicationFactor
         var existingQuiz = new Quiz
         {
             Id = existingId,
-            Title = "Seeded"
+            Title = $"Test Quiz {Guid.NewGuid()}"
         };
 
-        using (var scope = _factory.Services.CreateScope())
-        {
-            var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Quizzes.Add(existingQuiz);
-            await db.SaveChangesAsync();
-        }
+        DbContext.Quizzes.Add(existingQuiz);
+        await DbContext.SaveChangesAsync();
 
         var request = new QuestionRequest(QuestionType.SingleChoice, string.Empty, []);
         
-        var response = await _client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request);
+        var response = await Client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
