@@ -20,7 +20,7 @@ public class GetQuizzesTest : IClassFixture<SkillUpWebApplicationFactory>
         var response = await _client.GetAsync("/api/quizzes");
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<List<PostQuiz.QuizResponse>>();
+        var result = await response.Content.ReadFromJsonAsync<List<CreateQuiz.QuizResponse>>();
         result.Should().NotBeNull();
         result.Should().BeEmpty();
     }

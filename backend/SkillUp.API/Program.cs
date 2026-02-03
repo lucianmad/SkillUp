@@ -23,14 +23,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var quizGroup = app.MapGroup("/api/quizzes")
-    .WithTags("Quizzes");
-
-GetQuizzes.MapEndpoint(quizGroup);
-PostQuiz.MapEndpoint(quizGroup);
-GetQuizById.MapEndpoint(quizGroup);
-PutQuiz.MapEndpoint(quizGroup);
-DeleteQuiz.MapEndpoint(quizGroup);
+app.MapQuizEndpoints();
 
 app.Run();
 

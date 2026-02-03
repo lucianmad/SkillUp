@@ -3,7 +3,7 @@ using SkillUp.API.Domain;
 
 namespace SkillUp.API.Features.Quizzes;
 
-public static class PostQuiz
+public static class CreateQuiz
 {
     public record QuizRequest(string Title);
     public record QuizResponse(Guid Id, string Title);

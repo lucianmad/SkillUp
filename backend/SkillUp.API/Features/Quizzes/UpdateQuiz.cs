@@ -2,7 +2,7 @@ using SkillUp.API.Database;
 
 namespace SkillUp.API.Features.Quizzes;
 
-public static class PutQuiz
+public static class UpdateQuiz
 {
     public record QuizRequest(string Title);
     public static void MapEndpoint(RouteGroupBuilder group)

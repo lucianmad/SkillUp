@@ -8,12 +8,12 @@ using SkillUp.API.Features.Quizzes;
 
 namespace SkillUp.Tests.Features.Quizzes;
 
-public class PutQuizTest: IClassFixture<SkillUpWebApplicationFactory>
+public class UpdateQuizTest: IClassFixture<SkillUpWebApplicationFactory>
 {
     private readonly SkillUpWebApplicationFactory _factory;
     private readonly HttpClient _client;
 
-    public PutQuizTest(SkillUpWebApplicationFactory factory)
+    public UpdateQuizTest(SkillUpWebApplicationFactory factory)
     {
         _factory = factory;
         _client = factory.CreateClient();
@@ -23,7 +23,7 @@ public class PutQuizTest: IClassFixture<SkillUpWebApplicationFactory>
     public async Task PutQuiz_ShouldReturnNotFound_WhenQuizDoesNotExist()
     {
         var id = Guid.NewGuid();
-        var request = new PostQuiz.QuizRequest("Integration testing");
+        var request = new CreateQuiz.QuizRequest("Integration testing");
 
         var response = await _client.PutAsJsonAsync($"/api/quizzes/{id}", request);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -46,7 +46,7 @@ public class PutQuizTest: IClassFixture<SkillUpWebApplicationFactory>
             await db.SaveChangesAsync();
         }
         
-        var request = new PutQuiz.QuizRequest("Integration testing");
+        var request = new UpdateQuiz.QuizRequest("Integration testing");
         
         var response = await _client.PutAsJsonAsync($"/api/quizzes/{existingId}", request);
         
