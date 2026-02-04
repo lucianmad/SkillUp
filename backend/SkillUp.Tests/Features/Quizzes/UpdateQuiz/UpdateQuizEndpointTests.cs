@@ -2,14 +2,13 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using SkillUp.API.Domain;
-using SkillUp.API.Features.Quizzes;
-using SkillUp.API.Features.Quizzes.CreateQuiz;
+using SkillUp.API.Features.Quizzes.UpdateQuiz;
 
-namespace SkillUp.Tests.Features.Quizzes;
+namespace SkillUp.Tests.Features.Quizzes.UpdateQuiz;
 
-public class UpdateQuizTests: BaseIntegrationTest
+public class UpdateQuizEndpointTests: BaseIntegrationTest
 {
-    public UpdateQuizTests(SkillUpWebApplicationFactory factory) : base(factory) {}  
+    public UpdateQuizEndpointTests(SkillUpWebApplicationFactory factory) : base(factory) {}  
 
     [Fact]
     public async Task PutQuiz_ShouldReturnNotFound_WhenQuizDoesNotExist()
@@ -34,10 +33,30 @@ public class UpdateQuizTests: BaseIntegrationTest
         DbContext.Quizzes.Add(existingQuiz);
         await DbContext.SaveChangesAsync();
         
-        var request = new UpdateQuiz.QuizRequest("Integration testing");
+        var request = new QuizRequest("Integration testing");
         
         var response = await Client.PutAsJsonAsync($"/api/quizzes/{existingId}", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+    }
+    
+    [Fact]
+    public async Task PutQuiz_ShouldReturnBadRequest_WhenUpdatingAQuizWithEmptyTitle()
+    {
+        var existingId = Guid.NewGuid();
+        var existingQuiz = new Quiz
+        {
+            Id = existingId,
+            Title = "Seeded"
+        };
+        
+        DbContext.Quizzes.Add(existingQuiz);
+        await DbContext.SaveChangesAsync();
+        
+        var request = new QuizRequest("");
+        
+        var response = await Client.PutAsJsonAsync($"/api/quizzes/{existingId}", request);
+        
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 }

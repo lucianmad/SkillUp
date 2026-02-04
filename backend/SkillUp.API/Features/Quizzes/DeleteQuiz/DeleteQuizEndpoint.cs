@@ -2,31 +2,25 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using SkillUp.API.Database;
 
-namespace SkillUp.API.Features.Quizzes;
+namespace SkillUp.API.Features.Quizzes.DeleteQuiz;
 
-public static class UpdateQuiz
+public static class DeleteQuizEndpoint
 {
-    public record QuizRequest(string Title);
     public static void MapEndpoint(RouteGroupBuilder group)
     {
-        group.MapPut("/{id:guid}", HandleAsync);
+        group.MapDelete("/{id:guid}", HandleAsync);
     }
 
-    private static async Task<Results<NoContent, NotFound>> HandleAsync(
-        Guid id, 
-        AppDbContext context, 
-        QuizRequest request,
-        CancellationToken ct)
+    private static async Task<Results<NoContent, NotFound>> HandleAsync(Guid id, AppDbContext context, CancellationToken ct)
     {
         var quiz = await context.Quizzes.FirstOrDefaultAsync(q => q.Id == id, ct);
 
-        if (quiz == null)
+        if (quiz is null)
         {
             return TypedResults.NotFound();
         }
         
-        quiz.Title = request.Title;
-
+        context.Quizzes.Remove(quiz);
         await context.SaveChangesAsync(ct);
         
         return TypedResults.NoContent();

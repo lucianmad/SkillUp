@@ -7,11 +7,13 @@ public static class QuizEndpoints
         var group = app.MapGroup("/api/quizzes")
             .WithTags("Quizzes");
         
-        GetQuizzes.MapEndpoint(group);
+        GetQuizzes.GetQuizzesEndpoint.MapEndpoint(group);
         CreateQuiz.CreateQuizEndpoint.MapEndpoint(group);
-        GetQuizById.MapEndpoint(group);
-        UpdateQuiz.MapEndpoint(group);
-        DeleteQuiz.MapEndpoint(group);
+        GetQuizById.GetQuizByIdEndpoint.MapEndpoint(group);
+        UpdateQuiz.UpdateQuizEndpoint.MapEndpoint(group);
+        DeleteQuiz.DeleteQuizEndpoint.MapEndpoint(group);
         AddQuestion.AddQuestionEndpoint.MapEndpoint(group);
+        UpdateQuestion.UpdateQuestionEndpoint.MapEndpoint(group);
+        GetQuestions.GetQuestionsEndpoint.MapEndpoint(group);
     }
 }

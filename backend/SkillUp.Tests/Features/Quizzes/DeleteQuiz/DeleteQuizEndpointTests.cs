@@ -2,11 +2,11 @@ using System.Net;
 using FluentAssertions;
 using SkillUp.API.Domain;
 
-namespace SkillUp.Tests.Features.Quizzes;
+namespace SkillUp.Tests.Features.Quizzes.DeleteQuiz;
 
-public class DeleteQuizTests: BaseIntegrationTest
+public class DeleteQuizEndpointTests: BaseIntegrationTest
 {
-    public DeleteQuizTests(SkillUpWebApplicationFactory factory) : base(factory) {}
+    public DeleteQuizEndpointTests(SkillUpWebApplicationFactory factory) : base(factory) {}
 
     [Fact]
     public async Task DeleteQuiz_ShouldReturnNotFound_WhenQuizDoesNotExist()

@@ -2,11 +2,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using SkillUp.API.Database;
 
-namespace SkillUp.API.Features.Quizzes;
+namespace SkillUp.API.Features.Quizzes.GetQuizzes;
 
-public static class GetQuizzes
+public static class GetQuizzesEndpoint
 {
-    private record QuizResponse(Guid Id, string Title);
     public static void MapEndpoint(RouteGroupBuilder group)
     {
         group.MapGet("/", HandleAsync);

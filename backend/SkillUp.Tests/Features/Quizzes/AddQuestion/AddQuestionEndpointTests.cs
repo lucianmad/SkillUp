@@ -21,19 +21,19 @@ public class AddQuestionEndpointTests: BaseIntegrationTest
             Title = $"Test Quiz {Guid.NewGuid()}"
         };
 
-            DbContext.Quizzes.Add(existingQuiz);
-            await DbContext.SaveChangesAsync();
+        DbContext.Quizzes.Add(existingQuiz);
+        await DbContext.SaveChangesAsync();
 
-        var firstAnswer = new AnswerRequest("A", false);
-        var secondAnswer = new AnswerRequest("B", true);
-        var thirdAnswer = new AnswerRequest("C", false);
-        var answers = new List<AnswerRequest> {firstAnswer, secondAnswer, thirdAnswer};
-        var request = new QuestionRequest(QuestionType.SingleChoice, "What is the response", answers);
+        var firstAnswer = new CreateAnswerRequest("A", false);
+        var secondAnswer = new CreateAnswerRequest("B", true);
+        var thirdAnswer = new CreateAnswerRequest("C", false);
+        var answers = new List<CreateAnswerRequest> {firstAnswer, secondAnswer, thirdAnswer};
+        var request = new CreateQuestionRequest(QuestionType.SingleChoice, "What is the response", answers);
         
         var response = await Client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        var result = await response.Content.ReadFromJsonAsync<QuestionResponse>();
+        var result = await response.Content.ReadFromJsonAsync<CreateQuestionResponse>();
         result.Should().NotBeNull();
         result.Text.Should().Be("What is the response");
         result.Type.Should().Be(QuestionType.SingleChoice);
@@ -44,9 +44,9 @@ public class AddQuestionEndpointTests: BaseIntegrationTest
     public async Task AddQuestion_ShouldReturnNotFound_WhenAddingAQuestionToNonExistingQuiz()
     {
         var id = Guid.NewGuid();
-        var firstAnswer = new AnswerRequest("A", false);
-        var secondAnswer = new AnswerRequest("B", true);
-        var request = new QuestionRequest(QuestionType.SingleChoice, "Test question", [firstAnswer, secondAnswer]);
+        var firstAnswer = new CreateAnswerRequest("A", false);
+        var secondAnswer = new CreateAnswerRequest("B", true);
+        var request = new CreateQuestionRequest(QuestionType.SingleChoice, "Test question", [firstAnswer, secondAnswer]);
         
         var response = await Client.PostAsJsonAsync($"/api/quizzes/{id}/questions", request);
         
@@ -66,7 +66,7 @@ public class AddQuestionEndpointTests: BaseIntegrationTest
         DbContext.Quizzes.Add(existingQuiz);
         await DbContext.SaveChangesAsync();
 
-        var request = new QuestionRequest(QuestionType.SingleChoice, string.Empty, []);
+        var request = new CreateQuestionRequest(QuestionType.SingleChoice, string.Empty, []);
         
         var response = await Client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request);
         

@@ -1,11 +1,11 @@
 using FluentValidation;
 using SkillUp.API.Domain.Enums;
 
-namespace SkillUp.API.Features.Quizzes.AddQuestion;
+namespace SkillUp.API.Features.Quizzes.UpdateQuestion;
 
-public class AddQuestionValidator: AbstractValidator<CreateQuestionRequest>
+public class UpdateQuestionValidator: AbstractValidator<UpdateQuestionRequest>
 {
-    public AddQuestionValidator()
+    public UpdateQuestionValidator()
     {
         RuleFor(q => q.Text)
             .NotEmpty().WithMessage("Question text is required")

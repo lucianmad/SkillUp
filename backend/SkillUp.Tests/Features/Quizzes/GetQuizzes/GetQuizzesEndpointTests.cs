@@ -4,11 +4,11 @@ using FluentAssertions;
 using SkillUp.API.Domain;
 using SkillUp.API.Features.Quizzes.CreateQuiz;
 
-namespace SkillUp.Tests.Features.Quizzes;
+namespace SkillUp.Tests.Features.Quizzes.GetQuizzes;
 
-public class GetQuizzesTests : BaseIntegrationTest
+public class GetQuizzesEndpointTests : BaseIntegrationTest
 {
-    public GetQuizzesTests(SkillUpWebApplicationFactory factory) : base(factory) {}
+    public GetQuizzesEndpointTests(SkillUpWebApplicationFactory factory) : base(factory) {}
 
     [Fact]
     public async Task GetQuizzes_ShouldReturnOkAndEmptyList_WhenNoQuizzesExist()

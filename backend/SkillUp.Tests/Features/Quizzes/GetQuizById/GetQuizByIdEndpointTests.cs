@@ -2,14 +2,14 @@ using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
 using SkillUp.API.Domain;
-using SkillUp.API.Features.Quizzes;
+using SkillUp.API.Features.Quizzes.GetQuizById;
 
-namespace SkillUp.Tests.Features.Quizzes;
+namespace SkillUp.Tests.Features.Quizzes.GetQuizById;
 
-public class GetQuizByIdTests: BaseIntegrationTest
+public class GetQuizByIdEndpointTests: BaseIntegrationTest
 {
     
-    public GetQuizByIdTests(SkillUpWebApplicationFactory factory) : base(factory) {}
+    public GetQuizByIdEndpointTests(SkillUpWebApplicationFactory factory) : base(factory) {}
     
     [Fact]
     public async Task GetQuizById_ShouldReturnNotFound_WhenQuizDoesNotExist()
@@ -37,7 +37,7 @@ public class GetQuizByIdTests: BaseIntegrationTest
         var response = await Client.GetAsync($"/api/quizzes/{existingId}");
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<GetQuizById.QuizResponse>();
+        var result = await response.Content.ReadFromJsonAsync<QuizResponse>();
         result.Should().NotBeNull();
         result.Id.Should().Be(existingId);
         result.Title.Should().Be("Seeded");

@@ -12,10 +12,10 @@ public static class AddQuestionEndpoint
         group.MapPost("/{id:guid}/questions", HandleAsync);
     }
 
-    private static async Task<Results<Created<QuestionResponse>, NotFound, ValidationProblem>> HandleAsync(
+    private static async Task<Results<Created<CreateQuestionResponse>, NotFound, ValidationProblem>> HandleAsync(
             Guid id, 
             AppDbContext context, 
-            QuestionRequest request, 
+            CreateQuestionRequest request, 
             AddQuestionValidator validator,
             CancellationToken ct)
     {
@@ -27,7 +27,7 @@ public static class AddQuestionEndpoint
         
         var quiz = await context.Quizzes.FirstOrDefaultAsync(q => q.Id == id, ct);
 
-        if (quiz == null)
+        if (quiz is null)
         {
             return TypedResults.NotFound();
         }
@@ -47,12 +47,12 @@ public static class AddQuestionEndpoint
         quiz.Questions.Add(question);
         await context.SaveChangesAsync(ct);
         
-        var questionResponse = new QuestionResponse
+        var questionResponse = new CreateQuestionResponse
         (
             question.Id, 
             question.Text, 
             question.Type, 
-            question.Answers.Select(a => new AnswerResponse(a.Id, a.Text, a.IsCorrect)).ToList()
+            question.Answers.Select(a => new CreateAnswerResponse(a.Id, a.Text, a.IsCorrect)).ToList()
         );
         
         return TypedResults.Created($"/api/quizzes/{id}/questions/{question.Id}", questionResponse);
