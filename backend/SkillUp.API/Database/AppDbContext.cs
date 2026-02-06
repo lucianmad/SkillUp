@@ -6,6 +6,7 @@ namespace SkillUp.API.Database;
 public class AppDbContext: DbContext
 {
     public DbSet<Quiz> Quizzes { get; set; }
+    public DbSet<Question> Questions { get; set; }
     
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){}
 

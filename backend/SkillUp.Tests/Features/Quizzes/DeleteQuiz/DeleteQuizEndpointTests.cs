@@ -34,5 +34,6 @@ public class DeleteQuizEndpointTests: BaseIntegrationTest
         var response = await Client.DeleteAsync($"/api/quizzes/{existingId}");
         
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        DbContext.Quizzes.Should().BeEmpty();
     }
 }

@@ -14,6 +14,7 @@ public static class GetQuizzesEndpoint
     private static async Task<Ok<List<QuizResponse>>> HandleAsync(AppDbContext context, CancellationToken ct)
     {
         var quizzes = await context.Quizzes
+            .AsNoTracking()
             .Select(q => new QuizResponse(q.Id, q.Title))
             .ToListAsync(ct);
         

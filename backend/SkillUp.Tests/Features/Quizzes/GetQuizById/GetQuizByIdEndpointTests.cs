@@ -8,7 +8,6 @@ namespace SkillUp.Tests.Features.Quizzes.GetQuizById;
 
 public class GetQuizByIdEndpointTests: BaseIntegrationTest
 {
-    
     public GetQuizByIdEndpointTests(SkillUpWebApplicationFactory factory) : base(factory) {}
     
     [Fact]
@@ -41,5 +40,6 @@ public class GetQuizByIdEndpointTests: BaseIntegrationTest
         result.Should().NotBeNull();
         result.Id.Should().Be(existingId);
         result.Title.Should().Be("Seeded");
+        result.QuestionCount.Should().Be(0);
     }
 }

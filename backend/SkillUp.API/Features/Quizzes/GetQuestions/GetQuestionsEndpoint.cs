@@ -16,19 +16,17 @@ public static class GetQuestionsEndpoint
         AppDbContext context,
         CancellationToken ct)
     {
-        var quiz = await context.Quizzes
-            .Include(q => q.Questions)
-            .FirstOrDefaultAsync(q => q.Id == quizId, ct);
-
-        if (quiz is null)
+        var quizExists = await context.Quizzes.AnyAsync(q => q.Id == quizId, ct);
+        if (!quizExists)
         {
             return TypedResults.NotFound();
         }
         
-        var questions = quiz.Questions.Select(q => new QuestionResponse(
-            q.Id,
-            q.Text, 
-            q.Type.ToString())).ToList();
+        var questions = await context.Questions
+            .AsNoTracking()
+            .Where(q => q.QuizId == quizId)
+            .Select(q => new QuestionResponse(q.Id, q.Text, q.Type.ToString()))
+            .ToListAsync(ct);
         
         return TypedResults.Ok(questions);
     }
