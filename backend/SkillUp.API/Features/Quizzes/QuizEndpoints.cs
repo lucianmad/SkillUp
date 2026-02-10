@@ -16,5 +16,6 @@ public static class QuizEndpoints
         UpdateQuestion.UpdateQuestionEndpoint.MapEndpoint(group);
         GetQuestions.GetQuestionsEndpoint.MapEndpoint(group);
         DeleteQuestion.DeleteQuestionEndpoint.MapEndpoint(group);
+        SubmitAnswers.SubmitAnswersEndpoint.MapEndpoint(group);
     }
 }

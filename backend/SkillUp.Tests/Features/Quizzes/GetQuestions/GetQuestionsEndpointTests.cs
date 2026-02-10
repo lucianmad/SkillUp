@@ -68,7 +68,7 @@ public class GetQuestionsEndpointTests: BaseIntegrationTest
         var response = await Client.GetAsync($"/api/quizzes/{existingQuizId}/questions");
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync <List<QuestionResponse>>();
+        var result = await response.Content.ReadFromJsonAsync<List<QuestionResponse>>();
         result.Should().NotBeNull();
         result.Should().HaveCount(1);
     }
