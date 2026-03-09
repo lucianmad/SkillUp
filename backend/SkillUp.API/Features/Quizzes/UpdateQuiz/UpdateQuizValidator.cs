@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace SkillUp.API.Features.Quizzes.UpdateQuiz;
 
-public class UpdateQuizValidator: AbstractValidator<QuizRequest>
+public class UpdateQuizValidator: AbstractValidator<UpdateQuizRequest>
 {
     public UpdateQuizValidator()
     {

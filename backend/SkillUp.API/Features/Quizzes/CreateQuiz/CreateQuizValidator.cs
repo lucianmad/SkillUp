@@ -2,7 +2,7 @@ using FluentValidation;
 
 namespace SkillUp.API.Features.Quizzes.CreateQuiz;
 
-public class CreateQuizValidator: AbstractValidator<QuizRequest>
+public class CreateQuizValidator: AbstractValidator<CreateQuizRequest>
 {
     public CreateQuizValidator()
     {

@@ -14,7 +14,7 @@ public class UpdateQuizEndpointTests: BaseIntegrationTest
     public async Task PutQuiz_ShouldReturnNotFound_WhenQuizDoesNotExist()
     {
         var id = Guid.NewGuid();
-        var request = new QuizRequest("Integration testing");
+        var request = new UpdateQuizRequest("Integration testing");
 
         var response = await Client.PutAsJsonAsync($"/api/quizzes/{id}", request);
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -33,7 +33,7 @@ public class UpdateQuizEndpointTests: BaseIntegrationTest
         DbContext.Quizzes.Add(existingQuiz);
         await DbContext.SaveChangesAsync();
         
-        var request = new QuizRequest("Integration testing");
+        var request = new UpdateQuizRequest("Integration testing");
         
         var response = await Client.PutAsJsonAsync($"/api/quizzes/{existingId}", request);
         
@@ -53,7 +53,7 @@ public class UpdateQuizEndpointTests: BaseIntegrationTest
         DbContext.Quizzes.Add(existingQuiz);
         await DbContext.SaveChangesAsync();
         
-        var request = new QuizRequest("");
+        var request = new UpdateQuizRequest("");
         
         var response = await Client.PutAsJsonAsync($"/api/quizzes/{existingId}", request);
         

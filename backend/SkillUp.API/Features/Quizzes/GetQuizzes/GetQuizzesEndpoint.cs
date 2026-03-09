@@ -11,11 +11,11 @@ public static class GetQuizzesEndpoint
         group.MapGet("/", HandleAsync);
     }
 
-    private static async Task<Ok<List<QuizResponse>>> HandleAsync(AppDbContext context, CancellationToken ct)
+    private static async Task<Ok<List<QuizListResponse>>> HandleAsync(AppDbContext context, CancellationToken ct)
     {
         var quizzes = await context.Quizzes
             .AsNoTracking()
-            .Select(q => new QuizResponse(q.Id, q.Title))
+            .Select(q => new QuizListResponse(q.Id, q.Title))
             .ToListAsync(ct);
         
         return TypedResults.Ok(quizzes);

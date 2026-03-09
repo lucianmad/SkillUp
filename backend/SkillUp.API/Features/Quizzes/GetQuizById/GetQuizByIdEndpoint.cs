@@ -11,12 +11,12 @@ public static class GetQuizByIdEndpoint
         group.MapGet("/{id:guid}", HandleAsync);
     }
 
-    private static async Task<Results<Ok<QuizResponse>, NotFound>> HandleAsync(AppDbContext context, Guid id, CancellationToken ct)
+    private static async Task<Results<Ok<QuizDetailsResponse>, NotFound>> HandleAsync(AppDbContext context, Guid id, CancellationToken ct)
     {
         var quiz = await context.Quizzes
             .AsNoTracking()
             .Where(q => q.Id == id)
-            .Select(q => new QuizResponse(q.Id, q.Title, q.Questions.Count))
+            .Select(q => new QuizDetailsResponse(q.Id, q.Title, q.Questions.Count))
             .FirstOrDefaultAsync(ct);
         
         return quiz is null ? TypedResults.NotFound() : TypedResults.Ok(quiz);

@@ -1,3 +1,3 @@
 namespace SkillUp.API.Features.Quizzes.GetQuizzes;
 
-public record QuizResponse(Guid Id, string Title);
+public record QuizListResponse(Guid Id, string Title);

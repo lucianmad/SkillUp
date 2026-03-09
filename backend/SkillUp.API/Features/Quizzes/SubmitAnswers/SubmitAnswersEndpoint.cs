@@ -28,8 +28,9 @@ public static class SubmitAnswersEndpoint
 
         var score = 0;
         var questionMap = quiz.Questions.ToDictionary(q => q.Id);
+        var userAnswers = request.Answers.DistinctBy(a => a.QuestionId);
 
-        foreach (var userAnswer in request.Answers.DistinctBy(a => a.QuestionId))
+        foreach (var userAnswer in userAnswers)
         {
             if (!questionMap.TryGetValue(userAnswer.QuestionId, out var question))
             {

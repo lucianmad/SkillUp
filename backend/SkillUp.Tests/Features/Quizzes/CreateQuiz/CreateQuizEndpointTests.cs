@@ -13,12 +13,12 @@ public class CreateQuizEndpointTests: BaseIntegrationTest
     [Fact]
     public async Task PostQuiz_ShouldReturnCreatedQuizWithAGuidAndATitle_WhenCreatingAValidQuiz()
     {
-        var request = new QuizRequest("Integration testing");
+        var request = new CreateQuizRequest("Integration testing");
         
         var response = await Client.PostAsJsonAsync("api/quizzes", request);
         
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        var result = await response.Content.ReadFromJsonAsync<QuizResponse>();
+        var result = await response.Content.ReadFromJsonAsync<CreateQuizResponse>();
         result.Should().NotBeNull();
         result.Title.Should().Be("Integration testing");
         result.Id.Should().NotBeEmpty();
@@ -27,7 +27,7 @@ public class CreateQuizEndpointTests: BaseIntegrationTest
     [Fact]
     public async Task PostQuiz_ShouldReturnBadRequest_WhenCreatingAQuizWithEmptyTitle()
     {
-        var request = new QuizRequest(string.Empty);
+        var request = new CreateQuizRequest(string.Empty);
         
         var response = await Client.PostAsJsonAsync("api/quizzes", request);
         
@@ -47,7 +47,7 @@ public class CreateQuizEndpointTests: BaseIntegrationTest
         DbContext.Quizzes.Add(existingQuiz);
         await DbContext.SaveChangesAsync();
         
-        var request = new QuizRequest("Seeded");
+        var request = new CreateQuizRequest("Seeded");
         
         var response = await Client.PostAsJsonAsync("api/quizzes", request);
         

@@ -11,7 +11,7 @@ public static class GetQuestionsEndpoint
         group.MapGet("/{quizId:guid}/questions", HandleAsync);
     }
 
-    private static async Task<Results<Ok<List<QuestionResponse>>, NotFound>> HandleAsync(
+    private static async Task<Results<Ok<List<QuestionListResponse>>, NotFound>> HandleAsync(
         Guid quizId,
         AppDbContext context,
         CancellationToken ct)
@@ -25,7 +25,11 @@ public static class GetQuestionsEndpoint
         var questions = await context.Questions
             .AsNoTracking()
             .Where(q => q.QuizId == quizId)
-            .Select(q => new QuestionResponse(q.Id, q.Text, q.Type.ToString()))
+            .Select(q => new QuestionListResponse(
+                q.Id, 
+                q.Text, 
+                q.Type.ToString(),
+                q.Answers.Select(a => new AnswerListResponse(a.Id, a.Text)).ToList()))
             .ToListAsync(ct);
         
         return TypedResults.Ok(questions);

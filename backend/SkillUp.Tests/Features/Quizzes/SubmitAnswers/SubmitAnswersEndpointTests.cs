@@ -57,8 +57,8 @@ public class SubmitAnswersEndpointTests: BaseIntegrationTest
         await DbContext.SaveChangesAsync();
 
         var request = new SubmitAnswersRequest([
-            new SubmitAnswerDTO(question1Id, [question1A.Id]),
-            new SubmitAnswerDTO(question2Id, [question2B.Id, question2C.Id])
+            new SubmitAnswerItem(question1Id, [question1A.Id]),
+            new SubmitAnswerItem(question2Id, [question2B.Id, question2C.Id])
         ]);
         
         var response = await Client.PostAsJsonAsync($"/api/quizzes/{quizId}/submit", request);
@@ -95,7 +95,7 @@ public class SubmitAnswersEndpointTests: BaseIntegrationTest
         DbContext.Quizzes.Add(existingQuiz);
         await DbContext.SaveChangesAsync();
         
-        var request = new SubmitAnswersRequest([new SubmitAnswerDTO(questionId, [questionA.Id])]);
+        var request = new SubmitAnswersRequest([new SubmitAnswerItem(questionId, [questionA.Id])]);
         
         var response = await Client.PostAsJsonAsync($"/api/quizzes/{quizId}/submit", request);
         
@@ -133,7 +133,7 @@ public class SubmitAnswersEndpointTests: BaseIntegrationTest
         DbContext.Quizzes.Add(existingQuiz);
         await DbContext.SaveChangesAsync();
         
-        var request = new SubmitAnswersRequest([new SubmitAnswerDTO(questionId, [questionA.Id, questionC.Id])]);
+        var request = new SubmitAnswersRequest([new SubmitAnswerItem(questionId, [questionA.Id, questionC.Id])]);
         
         var response = await Client.PostAsJsonAsync($"/api/quizzes/{quizId}/submit", request);
         
@@ -172,9 +172,9 @@ public class SubmitAnswersEndpointTests: BaseIntegrationTest
 
         var request = new SubmitAnswersRequest(
             [
-                new SubmitAnswerDTO(questionId, [questionA.Id]),
-                new SubmitAnswerDTO(questionId, [questionA.Id]),
-                new SubmitAnswerDTO(questionId, [questionA.Id])
+                new SubmitAnswerItem(questionId, [questionA.Id]),
+                new SubmitAnswerItem(questionId, [questionA.Id]),
+                new SubmitAnswerItem(questionId, [questionA.Id])
             ]);
         
         var response = await Client.PostAsJsonAsync($"/api/quizzes/{quizId}/submit", request);

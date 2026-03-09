@@ -36,7 +36,7 @@ public class GetQuizByIdEndpointTests: BaseIntegrationTest
         var response = await Client.GetAsync($"/api/quizzes/{existingId}");
         
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var result = await response.Content.ReadFromJsonAsync<QuizResponse>();
+        var result = await response.Content.ReadFromJsonAsync<QuizDetailsResponse>();
         result.Should().NotBeNull();
         result.Id.Should().Be(existingId);
         result.Title.Should().Be("Seeded");

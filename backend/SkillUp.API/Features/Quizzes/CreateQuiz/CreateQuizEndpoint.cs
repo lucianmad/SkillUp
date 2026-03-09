@@ -12,9 +12,9 @@ public static class CreateQuizEndpoint
         group.MapPost("/", HandleAsync);
     }
     
-    private static async Task<Results<Created<QuizResponse>, Conflict<string>, ValidationProblem>> HandleAsync(
+    private static async Task<Results<Created<CreateQuizResponse>, Conflict<string>, ValidationProblem>> HandleAsync(
             AppDbContext context, 
-            QuizRequest request, 
+            CreateQuizRequest request, 
             CreateQuizValidator validator,
             CancellationToken ct)
     {
@@ -39,7 +39,7 @@ public static class CreateQuizEndpoint
         context.Quizzes.Add(quiz);
         await context.SaveChangesAsync(ct);
         
-        var quizResponse = new QuizResponse(quiz.Id, quiz.Title);
+        var quizResponse = new CreateQuizResponse(quiz.Id, quiz.Title);
         
         return TypedResults.Created($"/api/quizzes/{quiz.Id}", quizResponse);
     } 

@@ -14,7 +14,7 @@ public static class UpdateQuizEndpoint
     private static async Task<Results<NoContent, NotFound, ValidationProblem>> HandleAsync(
         Guid id, 
         AppDbContext context, 
-        QuizRequest request,
+        UpdateQuizRequest request,
         UpdateQuizValidator validator,
         CancellationToken ct)
     {
