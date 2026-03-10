@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using SkillUp.API.Database;
 
@@ -9,6 +11,7 @@ public class BaseIntegrationTest: IClassFixture<SkillUpWebApplicationFactory>, I
     private readonly SkillUpWebApplicationFactory _factory;
     protected readonly HttpClient Client;
     protected readonly AppDbContext DbContext;
+    protected readonly JsonSerializerOptions JsonOptions;
 
     protected BaseIntegrationTest(SkillUpWebApplicationFactory factory)
     {
@@ -16,6 +19,11 @@ public class BaseIntegrationTest: IClassFixture<SkillUpWebApplicationFactory>, I
         Client = factory.CreateClient();
         _scope = factory.Services.CreateScope();
         DbContext = _scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        JsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() }
+        };
     }
     
     public async Task InitializeAsync()

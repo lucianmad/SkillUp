@@ -30,10 +30,10 @@ public class AddQuestionEndpointTests: BaseIntegrationTest
         var answers = new List<CreateAnswerRequest> {firstAnswer, secondAnswer, thirdAnswer};
         var request = new CreateQuestionRequest(QuestionType.SingleChoice, "What is the response", answers);
         
-        var response = await Client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request);
+        var response = await Client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request, JsonOptions);
 
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        var result = await response.Content.ReadFromJsonAsync<CreateQuestionResponse>();
+        var result = await response.Content.ReadFromJsonAsync<CreateQuestionResponse>(JsonOptions);
         result.Should().NotBeNull();
         result.Text.Should().Be("What is the response");
         result.Type.Should().Be(QuestionType.SingleChoice);
@@ -48,7 +48,7 @@ public class AddQuestionEndpointTests: BaseIntegrationTest
         var secondAnswer = new CreateAnswerRequest("B", true);
         var request = new CreateQuestionRequest(QuestionType.SingleChoice, "Test question", [firstAnswer, secondAnswer]);
         
-        var response = await Client.PostAsJsonAsync($"/api/quizzes/{id}/questions", request);
+        var response = await Client.PostAsJsonAsync($"/api/quizzes/{id}/questions", request, JsonOptions);
         
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -68,7 +68,7 @@ public class AddQuestionEndpointTests: BaseIntegrationTest
 
         var request = new CreateQuestionRequest(QuestionType.SingleChoice, string.Empty, []);
         
-        var response = await Client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request);
+        var response = await Client.PostAsJsonAsync($"/api/quizzes/{existingId}/questions", request, JsonOptions);
         
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
