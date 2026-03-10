@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
-import { Quiz } from '../../models/quiz.model';
 import { RouterLink } from "@angular/router";
+import { QuizListResponse } from '../../models/quiz-player.model';
 
 @Component({
   selector: 'app-quiz-card',
@@ -9,5 +9,5 @@ import { RouterLink } from "@angular/router";
   styleUrl: './quiz-card.component.scss',
 })
 export class QuizCardComponent {
-  quiz = input.required<Quiz>();
+  quiz = input.required<QuizListResponse>();
 }

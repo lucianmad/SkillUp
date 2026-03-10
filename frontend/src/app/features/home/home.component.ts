@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { QuizService } from '../../core/services/quiz.service';
 import { QuizCardComponent } from '../../shared/ui/quiz-card/quiz-card.component';
+import { QuizListResponse } from '../../shared/models/quiz-player.model';
 
 @Component({
   selector: 'app-home',
@@ -8,6 +9,19 @@ import { QuizCardComponent } from '../../shared/ui/quiz-card/quiz-card.component
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent {
-  quizService = inject(QuizService);
+export class HomeComponent implements OnInit{
+  private quizService = inject(QuizService);
+
+  quizzes = signal<QuizListResponse[]>([]);
+
+  ngOnInit(): void {
+    this.quizService.getQuizzes().subscribe({
+      next: (data) => {
+        this.quizzes.set(data);
+      },
+      error: (err) => {
+
+      }
+    })
+  }
 }

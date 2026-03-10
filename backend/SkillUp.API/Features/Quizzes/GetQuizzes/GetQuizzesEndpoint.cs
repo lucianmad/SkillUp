@@ -15,7 +15,7 @@ public static class GetQuizzesEndpoint
     {
         var quizzes = await context.Quizzes
             .AsNoTracking()
-            .Select(q => new QuizListResponse(q.Id, q.Title))
+            .Select(q => new QuizListResponse(q.Id, q.Title, q.Questions.Count))
             .ToListAsync(ct);
         
         return TypedResults.Ok(quizzes);

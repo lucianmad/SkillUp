@@ -1,6 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { QuizService } from '../../core/services/quiz.service';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-results',
@@ -9,31 +8,33 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
   styleUrl: './results.component.scss',
 })
 export class ResultsComponent {
-  quizService = inject(QuizService);
-  private route = inject(ActivatedRoute);
-  score: number = 0;
-  maximumScore: number = 0;
-  feedbackMessage: string = '';
+  private router = inject(Router);
+  
+  score = signal(0);
+  maximumScore = signal(0);
+  feedbackMessage = signal('');
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.score = this.quizService.computeResults(id); 
-      
-      const quiz = this.quizService.activeQuiz();
-      this.maximumScore = quiz ? quiz.questions.length : 0;
+    const state = history.state as { score?: number, total?: number };
 
-      const percentage = (this.score / this.maximumScore) * 100;
+    if (state && state.total != undefined) {
+      this.score.set(state.score!);
+      this.maximumScore.set(state.total!);
+
+      const percentage = (state.score! / state.total!) * 100;
 
       if (percentage > 80) {
-        this.feedbackMessage = '🏆 Master!';
+        this.feedbackMessage.set('🏆 Master!');
       }
       else if (percentage > 50) {
-        this.feedbackMessage = '👍 Good job, but you need some improvements!'
+        this.feedbackMessage.set('👍 Good job, but you need some improvements!');
       }
       else {
-        this.feedbackMessage = '📚 Keep practicing!';
+        this.feedbackMessage.set('📚 Keep practicing!');
       }
+    }
+    else {
+      this.router.navigate(['/']);
     }
   }
 }

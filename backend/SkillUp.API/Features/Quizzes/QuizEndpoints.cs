@@ -9,7 +9,6 @@ public static class QuizEndpoints
         
         GetQuizzes.GetQuizzesEndpoint.MapEndpoint(group);
         CreateQuiz.CreateQuizEndpoint.MapEndpoint(group);
-        GetQuizById.GetQuizByIdEndpoint.MapEndpoint(group);
         UpdateQuiz.UpdateQuizEndpoint.MapEndpoint(group);
         DeleteQuiz.DeleteQuizEndpoint.MapEndpoint(group);
         AddQuestion.AddQuestionEndpoint.MapEndpoint(group);
